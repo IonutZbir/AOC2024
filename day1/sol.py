@@ -1,7 +1,7 @@
 from typing import List, Tuple
 
 class Solution:
-    def __init__(self, file_path) -> None:
+    def __init__(self, file_path: str) -> None:
         self.file_path = file_path
         self.input = self.read_input()
 
@@ -37,7 +37,7 @@ class Solution:
         return sum((k * v for k, v in freq.items()))
 
 if __name__ == "__main__":
-    file = "input/input1.txt"
+    file = "input/input.txt"
     sol = Solution(file)
     print(sol.sol1())
     print(sol.sol2())
