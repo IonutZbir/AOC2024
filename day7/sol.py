@@ -16,48 +16,39 @@ class Solution:
                 val = int(row[0])
                 terms = row[1].split(" ")
                 terms = [int(x) for x in terms]
+                terms.insert(0, val)
                 
-                equations.append((val, terms))                
+                equations.append(terms)                
         return equations
     
-    def rec_sol(self, ris, eq, rc=0) -> bool:
-        # rc is the current result
-        
-        if len(eq) == 0:
-            return
-                
-        if ris == rc:
-            return True
-        
-        if len(eq) == 1:
-            return (eq[0] + rc == ris) or (eq[0] * rc == ris)
+    def rec_sol(self, eq: List[int], ris) -> bool:
         
         if len(eq) == 2:
-            t1 = (rc + eq[0] + eq[1] == ris) or (rc + eq[0] * eq[1] == ris)
-            t2 = (rc * eq[0] + eq[1] == ris) or (rc * eq[0] * eq[1] == ris)
-            return t1 or t2
-            
-        rcp = eq[0] + eq[1]
-        rcm = eq[0] * eq[1]
+            return (eq[0] + eq[1] == ris) or (eq[0] * eq[1] == ris) or (int(str(eq[0]) + str(eq[1])) == ris)
         
-        t1 = self.rec_sol(ris, eq[2:], rc + rcp) or self.rec_sol(ris, eq[2:], rc + rcm)
-        t2 = self.rec_sol(ris, eq[2:], rc * rcp) or self.rec_sol(ris, eq[2:], rc * rcm)
+        neq = [eq[0] + eq[1]] + eq[2:]
+
+        t1 = self.rec_sol(neq, ris)
         
-        return t1 or t2
+        neq = [eq[0] * eq[1]] + eq[2:]
+        t2 = self.rec_sol(neq, ris)
+        
+        neq = [int(str(eq[0]) + str(eq[1]))] + eq[2:]
+        t3 = self.rec_sol(neq, ris)
+        return t1 or t2 or t3    
         
     def solve(self) -> int:
         equations = self.input
-        s = 0
         indx = []
-        for i, (ris, eq) in enumerate(equations):
-            if self.rec_sol(ris, eq):
+        for i, eq in enumerate(equations):
+            print(eq)
+            if self.rec_sol(eq[1:], eq[0]):
                 indx.append(i)
         
-        print(indx)
-            
+        print(indx)    
         return sum(equations[i][0] for i in indx)
 
-file_path = "day7/input/test.txt"
+file_path = "day7/input/input.txt"
 s = Solution(file_path)
 s1 = s.solve()
 print(s1)
